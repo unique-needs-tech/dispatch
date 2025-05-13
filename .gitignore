@@ -129,7 +129,6 @@ ipython_config.py
 *.sage.py
 
 # Environments
-.env
 !data/.env
 .venv
 env/
@@ -219,3 +218,4 @@ components.d.ts
 
 # Pyright
 pyrightconfig.json
+config.bat

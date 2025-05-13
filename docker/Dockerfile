@@ -15,6 +15,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   # Needed for fetching stuff
   ca-certificates \
   wget \
+  gcc \
+  build-essential \
+  libffi-dev \
+  libssl-dev \
+  python3-dev \
+  libblas-dev \
+  liblapack-dev \
+  gfortran \
   && rm -rf /var/lib/apt/lists/*
 
 RUN wget --quiet -O - https://deb.nodesource.com/setup_20.x | bash - \
@@ -84,10 +92,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   wget gnupg \
   && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  ca-certificates \
+  wget \
+  gcc \
+  build-essential \
+  libffi-dev \
+  libssl-dev \
+  python3-dev \
+  libblas-dev \
+  liblapack-dev \
+  gfortran \
+  && rm -rf /var/lib/apt/lists/*
+
 RUN echo "deb http://apt.postgresql.org/pub/repos/apt bullseye-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
   && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
 
 RUN wget --quiet -O - https://deb.nodesource.com/setup_20.x | bash -
+
+ENV BLIS_ARCH="generic"
 
 COPY --from=sdist /dist/*.whl /tmp/dist/
 RUN buildDeps="" \
@@ -100,6 +123,7 @@ RUN buildDeps="" \
   # build dependencies to prevent accidental collusion.
   # These are also installed last as they are needed
   # during container run and can have the same deps w/
+  && apt-get install -y gcc build-essential libffi-dev libssl-dev \
   && apt-get install -y --no-install-recommends \
   pkg-config postgresql-client-14 nodejs \
   && apt-get clean \
